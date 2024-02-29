@@ -2,7 +2,7 @@
 This is the official code repository for "Rep-RTADet: Reparameterized Real-Time Algae Object Detectors Enhanced through Dynamic Cache-Based Poisson Fusion". 
 
 
-`Rep-RTADet` 算法在阿里天池 [IEEE Cybermatics 第二届国际 "Vision Meets Algae" 挑战赛](https://tianchi.aliyun.com/competition/entrance/532171)中获得冠军
+`Rep-RTADet` 算法在阿里天池  [IEEE Cybermatics 第二届国际 "Vision Meets Algae" 挑战赛](https://tianchi.aliyun.com/competition/entrance/532171) 中获得冠军
 
 ### 环境配置
 
