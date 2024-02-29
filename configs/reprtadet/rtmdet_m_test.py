@@ -1,4 +1,4 @@
-_base_ = './rtmdet_l_syncbn_fast_8xb32-300e_coco_copypaste.py'
+_base_ = './reprtadet_l_possion_test.py'
 
 # ========================modified parameters======================
 deepen_factor = 0.67

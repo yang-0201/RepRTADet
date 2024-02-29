@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .formatting import PackDetInputs
-from .mix_img_transforms import Mosaic, Mosaic9, YOLOv5MixUp, YOLOXMixUp, CopyPaste_zaolei,Pre_Copy, AIGC
+from .mix_img_transforms import Mosaic, Mosaic9, YOLOv5MixUp, YOLOXMixUp, CopyPaste_zaolei,Pre_Copy
 from .transforms import (FilterAnnotations, LetterResize, LoadAnnotations,
                          Polygon2Mask, PPYOLOERandomCrop, PPYOLOERandomDistort,
                          RandomAffine, RandomFlip, RegularizeRotatedBox,
@@ -14,5 +14,5 @@ __all__ = [
     'YOLOv5RandomAffine', 'PPYOLOERandomDistort', 'PPYOLOERandomCrop',
     'Mosaic9', 'YOLOv5CopyPaste', 'RemoveDataElement', 'RegularizeRotatedBox',
     'Polygon2Mask', 'PackDetInputs', 'RandomAffine', 'RandomFlip', 'Resize',
-    'FilterAnnotations','CopyPaste_zaolei','Pre_Copy','AIGC'
+    'FilterAnnotations','CopyPaste_zaolei','Pre_Copy'
 ]

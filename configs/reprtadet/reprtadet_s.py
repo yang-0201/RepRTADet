@@ -1,4 +1,4 @@
-_base_ = './rtmdet_l_syncbn_fast_8xb32-300e_coco_copypaste.py'
+_base_ = './reprtadet_l_possion.py'
 checkpoint = 'cspnext-s_imagenet_600e.pth'  # noqa
 
 # ========================modified parameters======================

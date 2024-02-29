@@ -12,7 +12,7 @@ val_data_prefix = 'images/val/'  # Prefix of val image path
 
 num_classes = 6  # Number of classes for classification
 # Batch size of a single GPU during training
-train_batch_size_per_gpu = 4
+train_batch_size_per_gpu = 2
 # Worker to pre-fetch data for each single GPU during training
 train_num_workers = 4
 # persistent_workers must be False if num_workers is 0.
@@ -127,15 +127,6 @@ model = dict(
         channel_attention=True,
         norm_cfg=norm_cfg,
         act_cfg=dict(type='SiLU', inplace=True)),
-    # neck=dict(
-    #     add_extra_convs='on_input',
-    #     depth=[2,2,2,2,2,2],
-    #     in_channels=[96,192,384,768],
-    #     mid_channels=[384,256,192],
-    #     out_channels=192,
-    #     num_outs = 4,
-    #     start_level=0,
-    #     type='mmdet.RepMuGFPN_yolox'),
     neck=dict(
         type='CSPNeXtPAFPN',
         deepen_factor=deepen_factor,

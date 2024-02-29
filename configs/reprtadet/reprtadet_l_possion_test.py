@@ -163,10 +163,6 @@ train_pipeline = [
         max_cached_images=mosaic_max_cached_images,
         pad_val=114.0),
     dict(
-        type='CopyPasteIJCAI1',
-        n=(-0.1, 0.6)
-    ),
-    dict(
         type='mmdet.RandomResize',
         # img_scale is (width, height)
         scale=(img_scale[0] * 2, img_scale[1] * 2),
