@@ -5,7 +5,7 @@ from typing import Sequence
 import torch.nn as nn
 from mmcv.cnn import ConvModule, DepthwiseSeparableConvModule
 # from mmdet.models.backbones.csp_darknet import CSPLayer
-from ..layers.csp_layer import CSPLayer, CSPDepthResELANUni
+from ..layers.csp_layer import CSPLayer
 from mmdet.utils import ConfigType, OptMultiConfig
 
 from mmyolo.registry import MODELS

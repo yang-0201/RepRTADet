@@ -9,7 +9,78 @@ from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 # from .se_layer import ChannelAttention
 # from .common import UniRepLKNetBlock, CBAM, CSPDepthResELANUni
 
+# From PyTorch internals
+from itertools import repeat
+import collections.abc
 
+def get_bn(channels):
+    return nn.BatchNorm2d(channels)
+def _ntuple(n):
+    def parse(x):
+        if isinstance(x, collections.abc.Iterable) and not isinstance(x, str):
+            return tuple(x)
+        return tuple(repeat(x, n))
+
+    return parse
+
+
+to_1tuple = _ntuple(1)
+to_2tuple = _ntuple(2)
+to_3tuple = _ntuple(3)
+to_4tuple = _ntuple(4)
+to_ntuple = _ntuple
+
+
+def get_conv2d_uni(in_channels, out_channels, kernel_size, stride, padding, dilation, groups, bias,
+                   attempt_use_lk_impl=True):
+    kernel_size = to_2tuple(kernel_size)
+    if padding is None:
+        padding = (kernel_size[0] // 2, kernel_size[1] // 2)
+    else:
+        padding = to_2tuple(padding)
+    need_large_impl = kernel_size[0] == kernel_size[1] and kernel_size[0] > 5 and padding == (
+    kernel_size[0] // 2, kernel_size[1] // 2)
+
+    if attempt_use_lk_impl and need_large_impl:
+        print('---------------- trying to import iGEMM implementation for large-kernel conv')
+        try:
+            from depthwise_conv2d_implicit_gemm import DepthWiseConv2dImplicitGEMM
+            print('---------------- found iGEMM implementation ')
+        except:
+            DepthWiseConv2dImplicitGEMM = None
+            print(
+                '---------------- found no iGEMM. use original conv. follow https://github.com/AILab-CVC/UniRepLKNet to install it.')
+        if DepthWiseConv2dImplicitGEMM is not None and need_large_impl and in_channels == out_channels \
+                and out_channels == groups and stride == 1 and dilation == 1:
+            print(f'===== iGEMM Efficient Conv Impl, channels {in_channels}, kernel size {kernel_size} =====')
+            return DepthWiseConv2dImplicitGEMM(in_channels, kernel_size, bias=bias)
+    return nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride,
+                     padding=padding, dilation=dilation, groups=groups, bias=bias)
+
+
+def convert_dilated_to_nondilated(kernel, dilate_rate):
+    identity_kernel = torch.ones((1, 1, 1, 1), dtype=kernel.dtype, device=kernel.device)
+    if kernel.size(1) == 1:
+        #   This is a DW kernel
+        dilated = F.conv_transpose2d(kernel, identity_kernel, stride=dilate_rate)
+        return dilated
+    else:
+        #   This is a dense or group-wise (but not DW) kernel
+        slices = []
+        for i in range(kernel.size(1)):
+            dilated = F.conv_transpose2d(kernel[:, i:i + 1, :, :], identity_kernel, stride=dilate_rate)
+            slices.append(dilated)
+        return torch.cat(slices, dim=1)
+
+
+def merge_dilated_into_large_kernel(large_kernel, dilated_kernel, dilated_r):
+    large_k = large_kernel.size(2)
+    dilated_k = dilated_kernel.size(2)
+    equivalent_kernel_size = dilated_r * (dilated_k - 1) + 1
+    equivalent_kernel = convert_dilated_to_nondilated(dilated_kernel, dilated_r)
+    rows_to_pad = large_k // 2 - equivalent_kernel_size // 2
+    merged_kernel = large_kernel + F.pad(equivalent_kernel, [rows_to_pad] * 4)
+    return merged_kernel
 class DilatedReparamBlock(nn.Module):
     """
     Dilated Reparam Block proposed in UniRepLKNet (https://github.com/AILab-CVC/UniRepLKNet)

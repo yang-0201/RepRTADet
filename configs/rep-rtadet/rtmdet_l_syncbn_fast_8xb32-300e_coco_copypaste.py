@@ -2,7 +2,7 @@ _base_ = ['../_base_/default_runtime.py', '../_base_/det_p5_tta.py']
 
 # ========================Frequently modified parameters======================
 # -----data related-----
-data_root = '/home/amax4090/yang/YOLOv6-main/zaolei_v2/'
+data_root = 'D:/detection/algae/'
 # Path of train annotation file
 train_ann_file = 'annotations/instances_train.json'
 train_data_prefix = 'images/train/'  # Prefix of train image path
@@ -14,7 +14,7 @@ num_classes = 6  # Number of classes for classification
 # Batch size of a single GPU during training
 train_batch_size_per_gpu = 4
 # Worker to pre-fetch data for each single GPU during training
-train_num_workers = 10
+train_num_workers = 4
 # persistent_workers must be False if num_workers is 0.
 persistent_workers = True
 metainfo = dict(
@@ -46,7 +46,7 @@ model_test_cfg = dict(
 
 # ========================Possible modified parameters========================
 # -----data related-----
-img_scale = (640, 640)  # width, height
+img_scale = (1280, 1280)  # width, height
 # ratio range for random resize
 random_resize_ratio_range = (0.1, 2.0)
 # Cached images number in mosaic
@@ -58,7 +58,7 @@ dataset_type = 'YOLOv5CocoDataset'
 # Batch size of a single GPU during validation
 val_batch_size_per_gpu = 2
 # Worker to pre-fetch data for each single GPU during validation
-val_num_workers = 10
+val_num_workers = 4
 
 # Config of batch shapes. Only on val.
 batch_shapes_cfg = dict(
